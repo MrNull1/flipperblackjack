@@ -76,6 +76,8 @@ int32_t f0blackjack_app(void* p) {
                 game_state.tutorial = false;
                 game_state.game = true;
                 game_state.okpressed = false;
+            } else if (game_state.game) {
+                break;
             }
             game_state.okpressed = false;
         }
