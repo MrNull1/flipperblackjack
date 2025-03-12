@@ -13,6 +13,8 @@ typedef struct {
     bool firsttime;
     bool menu;
     bool tutorial;
+    bool game;
+    bool paused;
 } GameState;
 
 void render_callback(Canvas* canvas, void* context) {
@@ -20,7 +22,10 @@ void render_callback(Canvas* canvas, void* context) {
     if (state->menu) {
         canvas_draw_icon(canvas, 0, 0, &I_title);
     } else if (state->tutorial) {
-          canvas_draw_icon(canvas, 0, 0, &I_tutorial);
+        canvas_draw_icon(canvas, 0, 0, &I_tutorial);
+    } else if (state->game) {
+        canvas_clear(canvas);
+        canvas_draw_str(canvas, 30, 10, "Press OK to quit.");
     }
 }
 
@@ -28,24 +33,12 @@ void input_callback(InputEvent* event, void* context) {
     GameState* state = (GameState*)context;
 
     if(event->type == InputTypePress) {
-        if(event->key == InputKeyUp) {
-            FURI_LOG_I("INPUT", "Up Pressed");
-        }
         if (event->key == InputKeyBack) {
             state->backpressed = true;
         }
         if (event->key == InputKeyOk) {
             state->okpressed = true;
         }
-    }
-}
-
-void tutpopup(GameState* state) {
-    UNUSED(state);
-    state->menu = false;
-    while(state->tutorial) {
-        furi_delay_ms(10);
-
     }
 }
 
@@ -56,22 +49,35 @@ int32_t f0blackjack_app(void* p) {
 
     ViewPort* viewport = view_port_alloc();
 
-    GameState game_state = {false, false, true, true, false};
+    GameState game_state = {false, false, true, true, false, false, false};
 
     view_port_draw_callback_set(viewport, render_callback, &game_state);
     view_port_input_callback_set(viewport, input_callback, &game_state);
 
     gui_add_view_port(gui, viewport, GuiLayerFullscreen);
 
+
     while (true) {
-        if (game_state.menu){
-            if (game_state.backpressed && game_state.menu) {
+        if (game_state.backpressed) {
+            if (game_state.menu){
                 break;
+            } else if (game_state.tutorial){
+                game_state.tutorial = false;
+                game_state.menu = true;
             }
-            if (game_state.okpressed && game_state.menu) {
+            game_state.backpressed = false;
+        }
+        if (game_state.okpressed) {
+            if (game_state.menu) {
+                game_state.tutorial = true;
+                game_state.menu = false;
                 game_state.okpressed = false;
-                tutpopup(game_state);
+            } else if (game_state.tutorial) {
+                game_state.tutorial = false;
+                game_state.game = true;
+                game_state.okpressed = false;
             }
+            game_state.okpressed = false;
         }
         furi_delay_ms(10);
     }

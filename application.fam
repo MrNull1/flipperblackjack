@@ -2,7 +2,7 @@
 
 App(
     appid="f0blackjack",  # Must be unique
-    name="mrnull1's Blackjack",  # Displayed in menus
+    name="Blackjack",  # Displayed in menus
     apptype=FlipperAppType.EXTERNAL,
     entry_point="f0blackjack_app",
     stack_size=2 * 1024,
