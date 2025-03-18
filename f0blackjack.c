@@ -23,7 +23,15 @@ typedef struct {
     int money;
     const Icon* suits[SUITS];
     const Icon* ranks[CARD_RANK_NUM];
+    const Icon* cards[2];
 } GameState;
+
+void game_render_callback(Canvas* canvas, void* context)
+{
+    UNUSED(canvas);
+    UNUSED(context);
+    return;
+}
 
 void render_callback(Canvas* canvas, void* context) {
     GameState* state = (GameState*)context;
@@ -35,8 +43,16 @@ void render_callback(Canvas* canvas, void* context) {
         canvas_clear(canvas);
         canvas_draw_str(canvas, 30, 10, "Render test");
         for (int i = 0; i < SUITS; i++) {
-            canvas_draw_icon(canvas, i * 10, 20, state->suits[i]);
+            canvas_draw_icon(canvas, i * 10, 10, state->suits[i]);
         }
+        for (int i = 0; i < CARD_RANK_NUM; i++) {
+            canvas_draw_icon(canvas, i * 10, 20, state->ranks[i]);
+        }
+        for (int i = 0; i < 2; i++) {
+            canvas_draw_icon(canvas, i * 15, 32, state->cards[i]);
+        }
+        canvas_draw_icon(canvas, 2, 34, state->ranks[0]);
+        canvas_draw_icon(canvas, 2, 45, state->suits[0]);
     }
 }
 
@@ -69,7 +85,9 @@ int32_t f0blackjack_app(void* p) {
         .paused = false,
         .bet = 10,
         .money = 50,
-        .suits = {&I_club, &I_spade, &I_heart, &I_diamond}
+        .suits = {&I_club, &I_spade, &I_heart, &I_diamond},
+        .ranks = {&I_1, &I_2, &I_3, &I_4, &I_5, &I_6, &I_7, &I_8, &I_9, &I_10, &I_11, &I_12, &I_13},
+        .cards = {&I_card1, &I_card2}
     };
 
     view_port_draw_callback_set(viewport, render_callback, &game_state);
