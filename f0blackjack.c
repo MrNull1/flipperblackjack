@@ -22,6 +22,7 @@ typedef struct {
     int bet;
     int money;
     const Icon* suits[SUITS];
+    const Icon* ranks[CARD_RANK_NUM];
 } GameState;
 
 void render_callback(Canvas* canvas, void* context) {
