@@ -1,7 +1,7 @@
 # For details & more options, see documentation/AppManifests.md in firmware repo
 
 App(
-    appid="f0blackjack",  # Must be unique
+    appid="blackjack",  # Must be unique
     name="Blackjack",  # Displayed in menus
     apptype=FlipperAppType.EXTERNAL,
     entry_point="f0blackjack_app",
